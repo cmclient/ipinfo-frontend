@@ -13,6 +13,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { siteConfig } from "@/config/site";
 import { Divider } from "@heroui/react";
 import { addToast } from "@heroui/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
 
 export default function Home() {
   const [ipData, setIpData] = useState<any>(null);
@@ -21,6 +22,30 @@ export default function Home() {
   const [errorTitle, setErrorTitle] = useState<string | null>(null);
   const [errorObject, setErrorObject] = useState<Error | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
+
+  const handleAction = (key: any) => {
+    if (!ipData || !ipData.ip) return;
+
+    let textToCopy = key === "copy-ip" ? ipData.ip : JSON.stringify(ipData, null, 2);
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => {
+        addToast({
+          title: "Clipboard",
+          description: `${key === "copy-ip" ? "IP address" : "IP details"} copied to clipboard`,
+          timeout: 3000,
+          shouldShowTimeoutProgress: true,
+        });
+      })
+      .catch(() => {
+        addToast({
+          color: "danger",
+          title: "Clipboard",
+          description: `Failed to copy ${key === "copy-ip" ? "IP address" : "IP details"} to clipboard`,
+          timeout: 3000,
+          shouldShowTimeoutProgress: true,
+        });
+      });
+  };
 
   const countryNames: { [key: string]: string } = {
     "AF": "Afghanistan",
@@ -319,14 +344,13 @@ export default function Home() {
       if (data.timezone) {
         const time = new Date().toLocaleString(navigator.language, {
           timeZone: data.timezone,
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: true,
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
         });
         data.currentTime = time;
       }
@@ -345,7 +369,11 @@ export default function Home() {
 
   const handleSearch = (e: any) => {
     e.preventDefault();
-    if (inputValue.trim()) fetchIpData(inputValue.trim());
+    const value = inputValue.split(":")[0].trim();
+    if (value) {
+      setInputValue(value);
+      fetchIpData(value);
+    }
   };
 
   const handleMyIpClick = () => {
@@ -365,11 +393,11 @@ export default function Home() {
     };
 
     const getBrowserName = (userAgent: string) => {
+      if (/Safari/.test(userAgent)) return "Apple Safari";
       if (/Edge/.test(userAgent)) return "Microsoft Edge";
-      if (/Chrome/.test(userAgent) && !/Edge/.test(userAgent) && !/Opera/.test(userAgent)) return "Google Chrome";
-      if (/Firefox/.test(userAgent)) return "Mozilla Firefox";
-      if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) return "Apple Safari";
       if (/Opera/.test(userAgent)) return "Opera";
+      if (/Firefox/.test(userAgent)) return "Mozilla Firefox";
+      if (/Chrome/.test(userAgent)) return "Google Chrome";
       return "Unknown";
     };
 
@@ -405,7 +433,7 @@ export default function Home() {
         <p className="text-xl text-muted mt-2">Find accurate data about any IP address</p>
       </div>
 
-      <form onSubmit={handleSearch} className="flex gap-3 items-center w-full max-w-lg">
+      <form onSubmit={handleSearch} className="flex gap-3 items-center w-full max-w-lg justify-center">
         <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
@@ -418,39 +446,43 @@ export default function Home() {
           }}
           placeholder="Type IP address..."
           size="sm"
-          startContent={<SearchIcon size={18} />}
+          startContent={
+            <Button 
+              disabled={ipData?.ip === userIp} 
+              size="sm" 
+              isIconOnly 
+              variant="light" 
+              onPress={handleMyIpClick}
+            >
+              {ipData?.ip !== userIp ? (
+                <Tooltip content="Check my IP details">
+                  <SearchIcon size={18} />
+                </Tooltip>
+              ) : (
+                <SearchIcon size={18} />
+              )}
+            </Button>
+          }
+          
           endContent={ipData && ipData.ip && (
-            <Icon
-              fontSize={24}
-              icon="ri:file-copy-fill"
-              onClick={() => {
-                navigator.clipboard.writeText(JSON.stringify(ipData, null, 2)).then(() => {
-                  addToast({
-                    title: "Clipboard",
-                    description: `${ipData.ip} address details have been copied to the clipboard`,
-                    timeout: 3000,
-                    shouldShowTimeoutProgress: true,
-                  });
-                }).catch(() => {
-                  addToast({
-                    color: "danger",
-                    title: "Clipboard",
-                    description: `Failed to copy ${ipData.ip} address details to clipboard`,
-                    timeout: 3000,
-                    shouldShowTimeoutProgress: true,
-                  });
-                });
-              }}
-              style={{ cursor: "pointer" }}
-            />
+            <><>
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button isIconOnly variant="light">
+                    <Icon fontSize={24} icon="ri:file-copy-fill" />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Copy Actions" onAction={handleAction}>
+                  <DropdownItem key="copy-ip">Copy address</DropdownItem>
+                  <DropdownItem key="copy-details">Copy details <Chip size="sm" radius="sm" variant="flat">JSON</Chip></DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </></>
           )}
           type="search"
         />
         <Button color="primary" variant="shadow" type="submit">
           Search
-        </Button>
-        <Button color="danger" variant="shadow" onClick={handleMyIpClick}>
-          My IP
         </Button>
       </form>
 
@@ -472,7 +504,7 @@ export default function Home() {
         </div>
       )}
 
-      {ipData && (
+      {!loading && ipData && (
         <div className="flex flex-wrap justify-center gap-6 mt-8 w-full max-w-5xl">
           {/* Limited Alert */}
           {ipData.isLimited && (
@@ -545,7 +577,7 @@ export default function Home() {
         </div>
       )}
 
-      {ipData && (
+      {!loading && ipData && (
         <div className="flex flex-wrap justify-center gap-6 mt-8 w-full max-w-5xl">
           {/* ASN Card */}
           {ipData.asn && !ipData.isLimited && (
@@ -568,6 +600,35 @@ export default function Home() {
                 <h3 className="card-title">Company</h3>
                 <Tooltip content={`${ipData.company.domain}\n${ipData.company.type}\n`}>
                   <Button>{ipData.company.name || "Unknown"}</Button>
+                </Tooltip>
+              </div>
+            </Card>
+          )}
+
+          {/* Abuse Card */}
+          {ipData.abuse && !ipData.isLimited && (
+            <Card className="w-80 bg-base-100 shadow-xl">
+              <div className="card-body flex flex-col items-center">
+                <Icon fontSize={32} icon="mdi:shield-alert" />
+                <h3 className="card-title">Abuse</h3>
+                <Tooltip content={`${ipData.abuse.address}\n${ipData.abuse.country}\n${ipData.abuse.email}\n${ipData.abuse.phone}`}>
+                  <Button>{ipData.abuse.name || "Unknown"}</Button>
+                </Tooltip>
+              </div>
+            </Card>
+          )}
+
+          {/* Domains Card */}
+          {ipData.domains && ipData.domains.total > 0 && !ipData.isLimited && (
+            <Card className="w-80 bg-base-100 shadow-xl">
+              <div className="card-body flex flex-col items-center">
+                <Icon fontSize={32} icon="mdi:web" />
+                <h3 className="card-title">Domains</h3>
+
+                <Tooltip content={ipData.domains.domains.map((domain: string, index: number) => (
+                  <li key={index}>{domain}</li>
+                ))}>
+                  <Button>{ipData.domains.total} total domains</Button>
                 </Tooltip>
               </div>
             </Card>
@@ -613,40 +674,11 @@ export default function Home() {
               </div>
             </Card>
           )}
-
-          {/* Abuse Card */}
-          {ipData.abuse && !ipData.isLimited && (
-            <Card className="w-80 bg-base-100 shadow-xl">
-              <div className="card-body flex flex-col items-center">
-                <Icon fontSize={32} icon="mdi:shield-alert" />
-                <h3 className="card-title">Abuse</h3>
-                <Tooltip content={`${ipData.abuse.address}\n${ipData.abuse.country}\n${ipData.abuse.email}\n${ipData.abuse.phone}`}>
-                  <Button>{ipData.abuse.name || "Unknown"}</Button>
-                </Tooltip>
-              </div>
-            </Card>
-          )}
-
-          {/* Domains Card */}
-          {ipData.domains && ipData.domains.total > 0 && !ipData.isLimited && (
-            <Card className="w-80 bg-base-100 shadow-xl">
-              <div className="card-body flex flex-col items-center">
-                <Icon fontSize={32} icon="mdi:web" />
-                <h3 className="card-title">Domains</h3>
-
-                <Tooltip content={ipData.domains.domains.map((domain: string, index: number) => (
-                  <li key={index}>{domain}</li>
-                ))}>
-                  <Button>{ipData.domains.total} total domains</Button>
-                </Tooltip>
-              </div>
-            </Card>
-          )}
         </div>
       )}
 
       {/* Browser Details */}
-      {browserDetails && userIp && ipData?.ip === userIp && (
+      {!loading && browserDetails && userIp && ipData?.ip === userIp && (
         <><>
           <Divider />
 
@@ -675,7 +707,7 @@ export default function Home() {
                     });
                   })
                 }}
-                style={{ cursor: "pointer", marginLeft: "10px" }} // Added margin for spacing
+                style={{ cursor: "pointer", marginLeft: "10px" }}
               />
             </h1>
           </div>
