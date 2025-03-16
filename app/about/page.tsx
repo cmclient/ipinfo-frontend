@@ -10,22 +10,11 @@ export default function AboutPage() {
         <Icon fontSize="64px" icon="mdi:information-outline" />
         <h1 className="text-3xl font-bold">About Us</h1>
         <p className="text-base text-muted mt-2">
-          SpaceIP created by SpaceHost and powered by CMCLIENT, provides accurate IP data like location, ISP, and more, helping you make better online decisions.
+          IP Info provides accurate IP data like location, ISP, and more, helping you make better online decisions.
         </p>
       </div>
 
       <div className="flex flex-wrap justify-center gap-6 mt-8 w-full max-w-5xl">
-        <Card className="w-80 bg-base-100 shadow-xl">
-          <CardHeader>
-            <h3 className="text-lg font-semibold">What We Do</h3>
-          </CardHeader>
-          <CardBody>
-            <p>
-              SpaceIP helps you check the details of any IP address, like its location, ISP, and more. It&apos;s fast and easy!
-            </p>
-          </CardBody>
-        </Card>
-
         <Card className="w-80 bg-base-100 shadow-xl">
           <CardHeader>
             <h3 className="text-lg font-semibold">Our Mission</h3>
@@ -54,6 +43,7 @@ export default function AboutPage() {
 
       <div className="flex items-center justify-center w-full">
         <Alert
+          color="primary"
           title="Usage Policy"
           description="No automated use, spam, or illegal stuff allowed. We want to keep things safe and fair for everyone."
         />

@@ -54,8 +54,9 @@ export default function RootLayout({
                 href="https://cm-pack.pl"
                 title="cm-pack.pl homepage"
               >
-                <span className="text-default-600">All rights reserved. Powered by</span>
+                <span className="text-default-600">&copy;</span>
                 <p className="text-primary">CMCLIENT</p>
+                <span className="text-default-600">2025. All Rights Reserved.</span>
               </Link>
             </footer>
           </div>

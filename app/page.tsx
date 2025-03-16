@@ -11,6 +11,7 @@ import { Spinner } from "@heroui/spinner";
 import { SearchIcon } from "@/components/icons";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { siteConfig } from "@/config/site";
+import { Code, Divider } from "@heroui/react";
 
 export default function Home() {
   const [ipData, setIpData] = useState<any>(null);
@@ -18,6 +19,18 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [errorTitle, setErrorTitle] = useState<string | null>(null);
   const [errorObject, setErrorObject] = useState<Error | null>(null);
+  const [inputValue, setInputValue] = useState<string>("");
+
+  const [browserDetails, setBrowserDetails] = useState<any>({
+    browser: "",
+    operatingSystem: "",
+    device: "",
+    screenResolution: "",
+    windowResolution: "",
+    preferredLanguage: "",
+    referrer: "",
+    userAgent: ""
+  });
 
   useEffect(() => {
     const fetchUserIp = async () => {
@@ -25,6 +38,7 @@ export default function Home() {
         const response = await fetch("https://api.ipify.org?format=json");
         const data = await response.json();
         setUserIp(data.ip);
+        setInputValue(data.ip);
         fetchIpData(data.ip);
       } catch (error) {
         setLoading(false);
@@ -62,13 +76,57 @@ export default function Home() {
 
   const handleSearch = (e: any) => {
     e.preventDefault();
-    const ip = e.target.ipInput.value.trim();
-    if (ip) fetchIpData(ip);
+    if (inputValue.trim()) fetchIpData(inputValue.trim());
   };
 
   const handleMyIpClick = () => {
-    if (userIp) fetchIpData(userIp);
+    if (!userIp) return;
+    setInputValue(userIp);
+    fetchIpData(userIp);
   };
+
+  useEffect(() => {
+    const getOperatingSystem = (platform: string) => {
+      if (/Win/.test(platform)) return "Windows";
+      if (/Mac/.test(platform)) return "macOS";
+      if (/Linux/.test(platform)) return "Linux";
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) return "iOS";
+      if (/Android/.test(navigator.userAgent)) return "Android";
+      return platform;
+    };
+  
+    const getBrowserName = (userAgent: string) => {
+      if (/Chrome/.test(userAgent) && !/Edge/.test(userAgent) && !/Opera/.test(userAgent)) return "Google Chrome";
+      if (/Firefox/.test(userAgent)) return "Mozilla Firefox";
+      if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) return "Apple Safari";
+      if (/Edge/.test(userAgent)) return "Microsoft Edge";
+      if (/Opera/.test(userAgent)) return "Opera";
+      return "Unknown";
+    };
+  
+    const getDeviceType = () => {
+      const userAgent = navigator.userAgent;
+      
+      if (/Mobi|Android/i.test(userAgent)) {
+        return "Mobile";
+      } else if (/iPhone|iPad|iPod/i.test(userAgent)) {
+        return "Mobile";
+      } else {
+        return "Desktop";
+      }
+    };
+  
+    setBrowserDetails({
+      browser: getBrowserName(navigator.userAgent),
+      operatingSystem: getOperatingSystem(navigator.platform),
+      device: getDeviceType(),
+      screenResolution: `${window.screen.width}x${window.screen.height}`,
+      windowResolution: `${window.innerWidth}x${window.innerHeight}`,
+      preferredLanguage: navigator.language,
+      referrer: document.referrer || "None",
+      userAgent: navigator.userAgent,
+    });
+  }, []);
 
   return (
     <section className="flex flex-col items-center justify-center gap-6 py-8 md:py-10">
@@ -80,7 +138,8 @@ export default function Home() {
 
       <form onSubmit={handleSearch} className="flex gap-3 items-center w-full max-w-lg">
         <Input
-          id="ipInput"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
           classNames={{
             base: "max-w-full sm:max-w-[20rem] h-12",
             mainWrapper: "h-full",
@@ -275,6 +334,96 @@ export default function Home() {
             </Card>
           )}
         </div>
+      )}
+
+      {/* Browser Details */}
+      {userIp && ipData?.ip === userIp && (
+        <><>
+          <Divider />
+
+          <div className="flex flex-col items-center text-center max-w-xl mx-auto">
+            <Icon fontSize="64px" icon="ri:computer-fill" />
+            <h1 className="text-3xl font-bold">Browser details</h1>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-6 mt-8 w-full max-w-5xl">
+            {/* Browser Card */}
+            <Card className="w-80 bg-base-100 shadow-xl">
+              <div className="card-body flex flex-col items-center">
+                <Icon fontSize={32} icon="ri:window-2-fill" />
+                <h3 className="card-title">Browser</h3>
+                <p className="text-lg font-semibold">{browserDetails.browser}</p>
+              </div>
+            </Card>
+
+            {/* Device Card */}
+            <Card className="w-80 bg-base-100 shadow-xl">
+              <div className="card-body flex flex-col items-center">
+                <Icon fontSize={32} icon="ri:device-fill" />
+                <h3 className="card-title">Device</h3>
+                <p className="text-lg font-semibold">{browserDetails.device}</p>
+              </div>
+            </Card>
+
+            {/* Operating System Card */}
+            <Card className="w-80 bg-base-100 shadow-xl">
+              <div className="card-body flex flex-col items-center">
+                <Icon fontSize={32} icon="ri:windows-fill" />
+                <h3 className="card-title">Operating System</h3>
+                <p className="text-lg font-semibold">{browserDetails.operatingSystem}</p>
+              </div>
+            </Card>
+
+            {/* Screen Resolution Card */}
+            <Card className="w-80 bg-base-100 shadow-xl">
+              <div className="card-body flex flex-col items-center">
+                <Icon fontSize={32} icon="ri:fullscreen-line" />
+                <h3 className="card-title">Screen Resolution</h3>
+                <p className="text-lg font-semibold">{browserDetails.screenResolution}</p>
+              </div>
+            </Card>
+
+            {/* Window Resolution Card */}
+            <Card className="w-80 bg-base-100 shadow-xl">
+              <div className="card-body flex flex-col items-center">
+                <Icon fontSize={32} icon="ri:aspect-ratio-line" />
+                <h3 className="card-title">Window Resolution</h3>
+                <p className="text-lg font-semibold">{browserDetails.windowResolution}</p>
+              </div>
+            </Card>
+
+            {/* Preferred Language Card */}
+            <Card className="w-80 bg-base-100 shadow-xl">
+              <div className="card-body flex flex-col items-center">
+                <Icon fontSize={32} icon="mdi:language" />
+                <h3 className="card-title">Preferred Language</h3>
+                <p className="text-lg font-semibold">{browserDetails.preferredLanguage}</p>
+              </div>
+            </Card>
+
+            {/* Referrer Card */}
+            {browserDetails.referrer && browserDetails.referrer !== "None" && (
+              <Card className="w-80 bg-base-100 shadow-xl">
+                <div className="card-body flex flex-col items-center">
+                  <Icon fontSize={32} icon="ri:links-fill" />
+                  <h3 className="card-title">Referrer</h3>
+                  <p className="text-lg font-semibold">{browserDetails.referrer}</p>
+                </div>
+              </Card>
+            )}
+
+            {/* User Agent Card */}
+            <Card className="w-80 bg-base-100 shadow-xl">
+              <div className="card-body flex flex-col items-center">
+                <Icon fontSize={32} icon="ri:information-fill" />
+                <h3 className="card-title">User Agent</h3>
+                <Tooltip content={browserDetails.userAgent}>
+                  <Code>{browserDetails.userAgent}</Code>
+                </Tooltip>
+              </div>
+            </Card>
+          </div>
+        </></>
       )}
 
       <div className="mt-8">

@@ -34,7 +34,7 @@ export const siteConfig = {
   links: {
     github: "https://github.com/cmclient",
     twitter: "https://twitter.com/cmclient",
-    docs: "https://heroui.com",
+    docs: "/docs.html",
     discord: "https://discord.gg/cmclient",
     sponsor: "https://patreon.com",
   },
