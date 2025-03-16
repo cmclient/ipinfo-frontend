@@ -367,13 +367,64 @@ export default function Home() {
     }
   };
 
-  const handleSearch = (e: any) => {
-    e.preventDefault();
-    const value = inputValue.split(":")[0].trim();
-    if (value) {
-      setInputValue(value);
-      fetchIpData(value);
+  const isDomain = (value: string) => {
+    const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?=$|\/)/;
+    return domainRegex.test(value);
+  };
+
+  const isValidIp = (ip: string) => {
+    const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    return ipRegex.test(ip);
+  };
+
+  const getIpFromDomain = async (domain: string, retries = 3) => {
+    try {
+      const response = await fetch(`https://dns.google/resolve?name=${domain}&type=A`);
+      const data = await response.json();
+  
+      if (data?.Answer && data.Answer.length > 0) {
+        const result = data.Answer[0].data;
+  
+        if (isValidIp(result)) {
+          return result;
+        } else {
+          if (retries > 0) {
+            console.log(`Received a domain: ${result}. Retrying with this domain...`);
+            return getIpFromDomain(result, retries - 1); // Retry with the new domain
+          } else {
+            console.error("Max retries reached, still no IP.");
+            return null;
+          }
+        }
+      } else {
+        console.error("No IP or domain found for the domain.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching IP:", error);
+      return null;
     }
+  };
+
+  const handleSearch = async (e: any) => {
+    e.preventDefault();
+
+    let value = inputValue.replace(/^https?:\/\//, "").split(":")[0].trim();
+    value = value.split("/")[0].trim();
+    value = value.endsWith('.') ? value.slice(0, -1) : value;
+
+    if (isDomain(value)) {
+      const ip = await getIpFromDomain(value);
+      if (ip) {
+        value = ip;
+      }
+    }
+
+    value = value.split("/")[0].trim();
+    value = value.endsWith('.') ? value.slice(0, -1) : value;
+
+    setInputValue(value);
+    fetchIpData(value);
   };
 
   const handleMyIpClick = () => {
@@ -444,14 +495,14 @@ export default function Home() {
             inputWrapper:
               "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
           }}
-          placeholder="Type IP address..."
+          placeholder="Type IP address or domain..."
           size="sm"
           startContent={
-            <Button 
-              disabled={ipData?.ip === userIp} 
-              size="sm" 
-              isIconOnly 
-              variant="light" 
+            <Button
+              disabled={ipData?.ip === userIp}
+              size="sm"
+              isIconOnly
+              variant="light"
               onPress={handleMyIpClick}
             >
               {ipData?.ip !== userIp ? (
@@ -463,7 +514,7 @@ export default function Home() {
               )}
             </Button>
           }
-          
+
           endContent={ipData && ipData.ip && (
             <><>
               <Dropdown>
@@ -474,7 +525,7 @@ export default function Home() {
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Copy Actions" onAction={handleAction}>
                   <DropdownItem key="copy-ip">Copy address</DropdownItem>
-                  <DropdownItem key="copy-details">Copy details&nbsp;&nbsp;<Chip size="sm" radius="sm" variant="flat">JSON</Chip></DropdownItem>
+                  <DropdownItem key="copy-details">Copy details&nbsp;&nbsp;<Chip size="sm" radius="sm" variant="flat" color="warning">JSON</Chip></DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </></>
@@ -525,15 +576,24 @@ export default function Home() {
             <div className="card-body flex flex-col items-center">
               <Icon fontSize={32} icon="ri:map-pin-2-fill" />
               <h3 className="card-title">Location</h3>
-              <p>{ipData.city || "Unknown"} {ipData.region ?? ""}</p>
-              {ipData.country && (
-                <Tooltip content={countryNames[ipData.country.toUpperCase()] || 'Unknown'}>
-                  <Icon
-                    icon={`flagpack:${ipData.country.toLowerCase()}`}
-                    style={{ borderRadius: '20%' }}
-                  />
-                </Tooltip>
+              {ipData.loc ? (
+                <a className="text-lg font-semibold" href={`https://www.google.com/maps?q=${ipData.loc}`} target="_blank" rel="noopener noreferrer">
+                  {ipData.city || "Unknown"}{ipData.city && ipData.region ? ", " : ""}{ipData.region || ""}
+                </a>
+              ) : (
+                <p className="text-lg font-semibold">{ipData.city || "Unknown"}{ipData.city && ipData.region ? ", " : ""}{ipData.region || ""}</p>
               )}
+              <div className="flex items-center">
+                {ipData.postal && (<p className="mr-2">{ipData.postal}</p>)}
+                {ipData.country && (
+                  <Tooltip content={countryNames[ipData.country.toUpperCase()] || 'Unknown'}>
+                    <Icon
+                      icon={`flagpack:${ipData.country.toLowerCase()}`}
+                      style={{ borderRadius: '20%' }}
+                    />
+                  </Tooltip>
+                )}
+              </div>
             </div>
           </Card>
 
@@ -543,7 +603,7 @@ export default function Home() {
               <div className="card-body flex flex-col items-center">
                 <Icon fontSize={32} icon="mdi:internet" />
                 <h3 className="card-title">Hostname</h3>
-                <p>{ipData.hostname}</p>
+                <p className="text-lg font-semibold">{ipData.hostname}</p>
               </div>
             </Card>
           )}
@@ -556,10 +616,10 @@ export default function Home() {
               {
                 ipData.currentTime ? (
                   <Tooltip content={ipData.currentTime}>
-                    <p>{ipData.timezone}</p>
+                    <p className="text-lg font-semibold">{ipData.timezone}</p>
                   </Tooltip>
                 ) : (
-                  <p>Unknown</p>
+                  <p className="text-lg font-semibold">Unknown</p>
                 )
               }
             </div>
@@ -570,10 +630,9 @@ export default function Home() {
             <div className="card-body flex flex-col items-center">
               <Icon fontSize={32} icon="mdi:server-network" />
               <h3 className="card-title">ISP</h3>
-              <p>{ipData.org || "Unknown"}</p>
+              <p className="text-lg font-semibold">{ipData.org || "Unknown"}</p>
             </div>
           </Card>
-
         </div>
       )}
 
@@ -586,7 +645,28 @@ export default function Home() {
                 <Icon fontSize={32} icon="ri:user-3-fill" />
                 <h3 className="card-title">ASN</h3>
                 <Tooltip content={`${ipData.asn.name}\n${ipData.asn.domain}\n${ipData.asn.route}\n${ipData.asn.type}`}>
-                  <Button>{ipData.asn.asn || "Unknown"}</Button>
+                  <Button
+                    onPress={() => {
+                      navigator.clipboard.writeText(JSON.stringify(ipData.asn, null, 2)).then(() => {
+                        addToast({
+                          title: "Clipboard",
+                          description: "ASN data has been copied to the clipboard",
+                          timeout: 3000,
+                          shouldShowTimeoutProgress: true,
+                        });
+                      }).catch(() => {
+                        addToast({
+                          color: "danger",
+                          title: "Clipboard",
+                          description: "Failed to copy ASN data to clipboard",
+                          timeout: 3000,
+                          shouldShowTimeoutProgress: true,
+                        });
+                      })
+                    }}
+                  >
+                    {ipData.asn.asn.slice(0, 30) || "Unknown"}{ipData.asn.asn.length > 30 ? '...' : ''}
+                  </Button>
                 </Tooltip>
               </div>
             </Card>
@@ -598,8 +678,29 @@ export default function Home() {
               <div className="card-body flex flex-col items-center">
                 <Icon fontSize={32} icon="mdi:company" />
                 <h3 className="card-title">Company</h3>
-                <Tooltip content={`${ipData.company.domain}\n${ipData.company.type}\n`}>
-                  <Button>{ipData.company.name || "Unknown"}</Button>
+                <Tooltip content={`${ipData.company.domain}\n${ipData.company.type}`}>
+                  <Button
+                    onPress={() => {
+                      navigator.clipboard.writeText(JSON.stringify(ipData.company, null, 2)).then(() => {
+                        addToast({
+                          title: "Clipboard",
+                          description: "Company data has been copied to the clipboard",
+                          timeout: 3000,
+                          shouldShowTimeoutProgress: true,
+                        });
+                      }).catch(() => {
+                        addToast({
+                          color: "danger",
+                          title: "Clipboard",
+                          description: "Failed to copy company data to clipboard",
+                          timeout: 3000,
+                          shouldShowTimeoutProgress: true,
+                        });
+                      })
+                    }}
+                  >
+                    {ipData.company.name.slice(0, 30) || "Unknown"}{ipData.company.name.length > 30 ? '...' : ''}
+                  </Button>
                 </Tooltip>
               </div>
             </Card>
@@ -612,7 +713,28 @@ export default function Home() {
                 <Icon fontSize={32} icon="mdi:shield-alert" />
                 <h3 className="card-title">Abuse</h3>
                 <Tooltip content={`${ipData.abuse.address}\n${ipData.abuse.country}\n${ipData.abuse.email}\n${ipData.abuse.phone}`}>
-                  <Button>{ipData.abuse.name || "Unknown"}</Button>
+                  <Button
+                    onPress={() => {
+                      navigator.clipboard.writeText(JSON.stringify(ipData.abuse, null, 2)).then(() => {
+                        addToast({
+                          title: "Clipboard",
+                          description: "Abuse data has been copied to the clipboard",
+                          timeout: 3000,
+                          shouldShowTimeoutProgress: true,
+                        });
+                      }).catch(() => {
+                        addToast({
+                          color: "danger",
+                          title: "Clipboard",
+                          description: "Failed to copy abuse data to clipboard",
+                          timeout: 3000,
+                          shouldShowTimeoutProgress: true,
+                        });
+                      })
+                    }}
+                  >
+                    {ipData.abuse.name.slice(0, 30) || "Unknown"}{ipData.abuse.name.length > 30 ? '...' : ''}
+                  </Button>
                 </Tooltip>
               </div>
             </Card>
@@ -628,7 +750,28 @@ export default function Home() {
                 <Tooltip content={ipData.domains.domains.map((domain: string, index: number) => (
                   <li key={index}>{domain}</li>
                 ))}>
-                  <Button>{ipData.domains.total} total domains</Button>
+                  <Button
+                    onPress={() => {
+                      navigator.clipboard.writeText(JSON.stringify(ipData.domains, null, 2)).then(() => {
+                        addToast({
+                          title: "Clipboard",
+                          description: "Domains data has been copied to the clipboard",
+                          timeout: 3000,
+                          shouldShowTimeoutProgress: true,
+                        });
+                      }).catch(() => {
+                        addToast({
+                          color: "danger",
+                          title: "Clipboard",
+                          description: "Failed to copy domains data to clipboard",
+                          timeout: 3000,
+                          shouldShowTimeoutProgress: true,
+                        });
+                      })
+                    }}
+                  >
+                    {ipData.domains.total} total domains
+                  </Button>
                 </Tooltip>
               </div>
             </Card>
@@ -646,20 +789,40 @@ export default function Home() {
                       {["vpn", "proxy", "tor", "relay", "hosting"].map((key) => (
                         <li key={key}>
                           {key.charAt(0).toUpperCase() + key.slice(1)}:{" "}
-                          <Chip color={ipData.privacy[key] ? "danger" : "success"}>
+                          <Chip variant="flat" color={ipData.privacy[key] ? "danger" : "default"}>
                             {ipData.privacy[key] ? "Yes" : "No"}
                           </Chip>
                         </li>
                       ))}
                       {ipData.privacy.service && (
                         <li key="service">
-                          Service: <Chip color="success">{String(ipData.privacy.service)}</Chip>
+                          Service: <Chip variant="flat" color="danger">{String(ipData.privacy.service)}</Chip>
                         </li>
                       )}
                     </ul>
                   }
                 >
-                  <Chip
+                  <Button
+                    onPress={() => {
+                      const privacyDataWithDetection = { detected: ["vpn", "proxy", "tor", "relay", "hosting"].some((key) => ipData.privacy[key]), ...ipData.privacy };
+
+                      navigator.clipboard.writeText(JSON.stringify(privacyDataWithDetection, null, 2)).then(() => {
+                        addToast({
+                          title: "Clipboard",
+                          description: "Spam data has been copied to the clipboard",
+                          timeout: 3000,
+                          shouldShowTimeoutProgress: true,
+                        });
+                      }).catch(() => {
+                        addToast({
+                          color: "danger",
+                          title: "Clipboard",
+                          description: "Failed to copy spam data to clipboard",
+                          timeout: 3000,
+                          shouldShowTimeoutProgress: true,
+                        });
+                      })
+                    }}
                     color={
                       ["vpn", "proxy", "tor", "relay", "hosting"].some((key) => ipData.privacy[key])
                         ? "danger"
@@ -669,7 +832,7 @@ export default function Home() {
                     {["vpn", "proxy", "tor", "relay", "hosting"].some((key) => ipData.privacy[key])
                       ? "Detected"
                       : "Undetected"}
-                  </Chip>
+                  </Button>
                 </Tooltip>
               </div>
             </Card>
