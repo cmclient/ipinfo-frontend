@@ -386,18 +386,18 @@ export default function Home() {
     const getOperatingSystem = (platform: string) => {
       if (/Win/.test(platform)) return "Windows";
       if (/Mac/.test(platform)) return "macOS";
-      if (/Linux/.test(platform)) return "Linux";
-      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) return "iOS";
       if (/Android/.test(navigator.userAgent)) return "Android";
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) return "iOS";
+      if (/Linux/.test(platform)) return "Linux";
       return platform;
     };
 
     const getBrowserName = (userAgent: string) => {
-      if (/Safari/.test(userAgent)) return "Apple Safari";
       if (/Edge/.test(userAgent)) return "Microsoft Edge";
       if (/Opera/.test(userAgent)) return "Opera";
       if (/Firefox/.test(userAgent)) return "Mozilla Firefox";
       if (/Chrome/.test(userAgent)) return "Google Chrome";
+      if (/Safari/.test(userAgent)) return "Apple Safari";
       return "Unknown";
     };
 
@@ -474,7 +474,7 @@ export default function Home() {
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Copy Actions" onAction={handleAction}>
                   <DropdownItem key="copy-ip">Copy address</DropdownItem>
-                  <DropdownItem key="copy-details">Copy details <Chip size="sm" radius="sm" variant="flat">JSON</Chip></DropdownItem>
+                  <DropdownItem key="copy-details">Copy details&nbsp;&nbsp;<Chip size="sm" radius="sm" variant="flat">JSON</Chip></DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </></>
