@@ -55,7 +55,7 @@ export default function DocsPage() {
         </div>
       )}
 
-<div className="flex items-center justify-center w-full">
+      <div className="flex items-center justify-center w-full">
         <Alert
           color="primary"
           title="Rate Limit"
