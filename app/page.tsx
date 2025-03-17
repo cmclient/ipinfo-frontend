@@ -381,16 +381,16 @@ export default function Home() {
     try {
       const response = await fetch(`https://dns.google/resolve?name=${domain}&type=A`);
       const data = await response.json();
-  
+
       if (data?.Answer && data.Answer.length > 0) {
         const result = data.Answer[0].data;
-  
+
         if (isValidIp(result)) {
           return result;
         } else {
           if (retries > 0) {
             console.log(`Received a domain: ${result}. Retrying with this domain...`);
-            return getIpFromDomain(result, retries - 1); // Retry with the new domain
+            return getIpFromDomain(result, retries - 1);
           } else {
             console.error("Max retries reached, still no IP.");
             return null;
@@ -409,19 +409,21 @@ export default function Home() {
   const handleSearch = async (e: any) => {
     e.preventDefault();
 
-    let value = inputValue.replace(/^https?:\/\//, "").split(":")[0].trim();
-    value = value.split("/")[0].trim();
-    value = value.endsWith('.') ? value.slice(0, -1) : value;
+    let value = inputValue.replace(/^https?:\/\//, "").trim();
+
+    if (value.indexOf(":") !== -1 && value.split(":").length === 2) {
+      value = value.split(":")[0].trim();
+    }
+
+    value = value.split("/")[0].replace(/\.$/, "");
 
     if (isDomain(value)) {
       const ip = await getIpFromDomain(value);
       if (ip) {
         value = ip;
+        value = value.split("/")[0].replace(/\.$/, "");
       }
     }
-
-    value = value.split("/")[0].trim();
-    value = value.endsWith('.') ? value.slice(0, -1) : value;
 
     setInputValue(value);
     fetchIpData(value);
@@ -560,6 +562,20 @@ export default function Home() {
           {/* Limited Alert */}
           {ipData.isLimited && (
             <Alert color="primary" title="Rate limit exceeded" description="Due to an exceeded rate limit some IP details may be unavailable" />
+          )}
+
+          {/* Bogon Alert */}
+          {ipData.bogon && (
+            <Alert color="warning" title="Bogon IP Address" description="This IP address is a bogon (reserved or unallocated IP) and may not be routable on the public internet." />
+          )}
+
+          {/* Anycast Alert */}
+          {ipData.is_anycast && (
+            <Alert
+              color="primary"
+              title="Anycast IP Address"
+              description="This IP address is an anycast address, meaning it is shared across multiple locations for routing efficiency."
+            />
           )}
 
           {/* IP Address Card */}
