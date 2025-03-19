@@ -1,4 +1,4 @@
-# IP Info - HeroUI App
+# IP Info
 
 A HeroUI v2 web app to display IP address details like location, ISP, and privacy info.
 
@@ -12,7 +12,7 @@ A HeroUI v2 web app to display IP address details like location, ISP, and privac
 This repository contains only the frontend source code.
 
 ## Live Demo
-https://ipinfo.spacehost.me
+[Click here](https://ipinfo.spacehost.me)
 
 ## Getting Started
 
