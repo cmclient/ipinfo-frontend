@@ -1,13 +1,15 @@
-# IP Info - Next.js & HeroUI App
+# IP Info - HeroUI App
 
-This is a web application built with Next.js 14 (App Router) and HeroUI v2 that provides detailed information about any IP address, including location, ISP, ASN, privacy status, and more.
+A HeroUI v2 web app to display IP address details like location, ISP, and privacy info.
 
 ## Features
 
-- Fetch and display details of any IP address
-- View geolocation, ISP, ASN, and other IP details
-- User-friendly UI with HeroUI components
-- Light & dark mode support
+- Lookup IP details (location, ISP, ASN, etc.)
+- Clean UI with HeroUI components
+- Light & dark mode
+
+## Note
+This repository contains only the frontend source code.
 
 ## Getting Started
 

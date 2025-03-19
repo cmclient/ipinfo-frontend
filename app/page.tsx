@@ -646,7 +646,7 @@ export default function Home() {
             <div className="card-body flex flex-col items-center">
               <Icon fontSize={32} icon="mdi:server-network" />
               <h3 className="card-title">ISP</h3>
-              <p className="text-lg font-semibold">{ipData.org || "Unknown"}</p>
+              <p className="text-lg font-semibold">{ipData.org || ipData.company?.name || "Unknown"}</p>
             </div>
           </Card>
         </div>

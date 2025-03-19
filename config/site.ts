@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "IP Info - Spacehost",
+  name: "IP Info",
   description: "Find accurate data about any IP address.",
   navItems: [
     {
@@ -15,7 +15,7 @@ export const siteConfig = {
     {
       label: "About",
       href: "/about.html",
-    },
+    }
   ],
   navMenuItems: [
     {
@@ -29,7 +29,7 @@ export const siteConfig = {
     {
       label: "About",
       href: "/about.html",
-    },
+    }
   ],
   links: {
     github: "https://github.com/cmclient",
