@@ -31,6 +31,34 @@ export const siteConfig = {
       href: "/about.html",
     }
   ],
+  navItemsDev: [
+    {
+      label: "Home",
+      href: "/",
+    },
+    {
+      label: "Docs",
+      href: "/docs",
+    },
+    {
+      label: "About",
+      href: "/about",
+    }
+  ],
+  navMenuItemsDev: [
+    {
+      label: "Home",
+      href: "/",
+    },
+    {
+      label: "Docs",
+      href: "/docs",
+    },
+    {
+      label: "About",
+      href: "/about",
+    }
+  ],
   links: {
     github: "https://github.com/cmclient",
     twitter: "https://twitter.com/cmclient",
