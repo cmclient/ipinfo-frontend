@@ -820,9 +820,7 @@ export default function Home() {
                 >
                   <Button
                     onPress={() => {
-                      const privacyDataWithDetection = { detected: ["vpn", "proxy", "tor", "relay", "hosting"].some((key) => ipData.privacy[key]), ...ipData.privacy };
-
-                      navigator.clipboard.writeText(JSON.stringify(privacyDataWithDetection, null, 2)).then(() => {
+                      navigator.clipboard.writeText(JSON.stringify(ipData.privacy, null, 2)).then(() => {
                         addToast({
                           title: "Clipboard",
                           description: "Spam data has been copied to the clipboard",

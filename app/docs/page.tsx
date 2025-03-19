@@ -68,7 +68,9 @@ export default function DocsPage() {
           <Card>
             <CardBody>
               <h2>Endpoint</h2>
-              <Code>GET https://api.spacehost.me:2087/search/:ip?/:prettyPrint?</Code>
+              <Code>
+                GET https://api.spacehost.me:2087/search/:ip?/:prettyPrint?
+              </Code>
             </CardBody>
           </Card>
 
@@ -81,9 +83,13 @@ export default function DocsPage() {
                   <Tooltip
                     content={
                       <ul>
-                        <li>Description: <Chip>The IP address used to fetch data</Chip></li>
                         <li>
-                          Default: <Chip color="primary">{userIp} (your IP)</Chip>
+                          Description:{" "}
+                          <Chip>The IP address used to fetch data</Chip>
+                        </li>
+                        <li>
+                          Default:{" "}
+                          <Chip color="primary">{userIp} (your IP)</Chip>
                         </li>
                         <li>
                           Optional: <Chip color="success">yes</Chip>
@@ -98,7 +104,10 @@ export default function DocsPage() {
                   <Tooltip
                     content={
                       <ul>
-                        <li>Description: <Chip>Formats output for readability</Chip></li>
+                        <li>
+                          Description:{" "}
+                          <Chip>Formats output for readability</Chip>
+                        </li>
                         <li>
                           Default: <Chip color="danger">false</Chip>
                         </li>
@@ -121,65 +130,135 @@ export default function DocsPage() {
               <Divider />
               <li>Returns IP data in JSON format</li>
               <Code>
-                &#123;<br />
-                &emsp;&quot;ip&quot;: &quot;141.95.202.239&quot;,<br />
-                &emsp;&quot;hostname&quot;: &quot;fr-gra01-e1.spacehost.me&quot;,<br />
-                &emsp;&quot;city&quot;: &quot;Calais&quot;,<br />
-                &emsp;&quot;region&quot;: &quot;Hauts-de-France&quot;,<br />
-                &emsp;&quot;country&quot;: &quot;FR&quot;,<br />
-                &emsp;&quot;loc&quot;: &quot;50.9519,1.8563&quot;,<br />
-                &emsp;&quot;org&quot;: &quot;AS16276 OVH SAS&quot;,<br />
-                &emsp;&quot;postal&quot;: &quot;62100&quot;,<br />
-                &emsp;&quot;timezone&quot;: &quot;Europe/Paris&quot;,<br />
-                &emsp;&quot;is_anycast&quot;: false,<br />
-                &emsp;&quot;is_mobile&quot;: false,<br />
-                &emsp;&quot;is_anonymous&quot;: false,<br />
-                &emsp;&quot;is_satellite&quot;: false,<br />
-                &emsp;&quot;is_hosting&quot;: true,<br />
-                &emsp;&quot;asn&quot;: &#123;<br />
-                &emsp;&emsp;&quot;asn&quot;: &quot;AS16276&quot;,<br />
-                &emsp;&emsp;&quot;name&quot;: &quot;OVH SAS&quot;,<br />
-                &emsp;&emsp;&quot;domain&quot;: &quot;ovhcloud.com&quot;,<br />
-                &emsp;&emsp;&quot;route&quot;: &quot;141.95.128.0/17&quot;,<br />
-                &emsp;&emsp;&quot;type&quot;: &quot;hosting&quot;<br />
-                &emsp;&#125;,<br />
-                &emsp;&quot;company&quot;: &#123;<br />
-                &emsp;&emsp;&quot;name&quot;: &quot;OVH SAS&quot;,<br />
-                &emsp;&emsp;&quot;domain&quot;: &quot;ovh.net&quot;,<br />
-                &emsp;&emsp;&quot;type&quot;: &quot;hosting&quot;<br />
-                &emsp;&#125;,<br />
-                &emsp;&quot;privacy&quot;: &#123;<br />
-                &emsp;&emsp;&quot;vpn&quot;: false,<br />
-                &emsp;&emsp;&quot;proxy&quot;: false,<br />
-                &emsp;&emsp;&quot;tor&quot;: false,<br />
-                &emsp;&emsp;&quot;relay&quot;: false,<br />
-                &emsp;&emsp;&quot;hosting&quot;: true,<br />
-                &emsp;&emsp;&quot;service&quot;: &quot;&quot;<br />
-                &emsp;&#125;,<br />
-                &emsp;&quot;abuse&quot;: &#123;<br />
-                &emsp;&emsp;&quot;address&quot;: &quot;OVH SAS, 2 Rue Kellermann, 59100 ROUBAIX, FRANCE&quot;,<br />
-                &emsp;&emsp;&quot;country&quot;: &quot;FR&quot;,<br />
-                &emsp;&emsp;&quot;email&quot;: &quot;abuse@ovh.net&quot;,<br />
-                &emsp;&emsp;&quot;name&quot;: &quot;Abuse-C Role&quot;,<br />
-                &emsp;&emsp;&quot;network&quot;: &quot;141.95.202.0/24&quot;,<br />
-                &emsp;&emsp;&quot;phone&quot;: &quot;&quot;<br />
-                &emsp;&#125;,<br />
-                &emsp;&quot;domains&quot;: &#123;<br />
-                &emsp;&emsp;&quot;page&quot;: 0,<br />
-                &emsp;&emsp;&quot;total&quot;: 0,<br />
-                &emsp;&emsp;&quot;domains&quot;: &#91;&#93;<br />
-                &emsp;&#125;,<br />
-                &emsp;&quot;isLimited&quot;: false,<br />
-                &emsp;&quot;tokenDetails&quot;: &#123;<br />
-                &emsp;&emsp;&quot;core&quot;: &#123;<br />
-                &emsp;&emsp;&emsp;&quot;daily&quot;: 2147483647,<br />
-                &emsp;&emsp;&emsp;&quot;monthly&quot;: 50000<br />
-                &emsp;&emsp;&#125;,<br />
-                &emsp;&emsp;&quot;hostio&quot;: &#123;<br />
-                &emsp;&emsp;&emsp;&quot;daily&quot;: 2147483647,<br />
-                &emsp;&emsp;&emsp;&quot;monthly&quot;: 1000,<br />
-                &emsp;&emsp;&emsp;&quot;result_limit&quot;: 5<br />
-                &emsp;&emsp;&#125;<br />
+                &#123;
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;ip&quot;: &quot;83.21.70.1&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;hostname&quot;:
+                &quot;83.21.70.1.ipv4.supernova.orange.pl&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;city&quot;: &quot;Poznań&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;region&quot;: &quot;Greater
+                Poland&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;country&quot;: &quot;PL&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;loc&quot;:
+                &quot;52.4069,16.9299&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;org&quot;: &quot;AS5617 Orange
+                Polska Spolka Akcyjna&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;postal&quot;: &quot;61-101&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;timezone&quot;:
+                &quot;Europe/Warsaw&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;is_anycast&quot;: false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;is_mobile&quot;: false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;is_anonymous&quot;: false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;is_satellite&quot;: false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;is_hosting&quot;: false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;asn&quot;: &#123;
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;asn&quot;:
+                &quot;AS5617&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;name&quot;:
+                &quot;Orange Polska Spolka Akcyjna&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;domain&quot;:
+                &quot;orange.pl&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;route&quot;:
+                &quot;83.16.0.0/13&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;type&quot;:
+                &quot;isp&quot;
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&#125;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;company&quot;: &#123;
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;name&quot;:
+                &quot;Orange Polska Spolka Akcyjna&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;domain&quot;:
+                &quot;orange.com&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;type&quot;:
+                &quot;isp&quot;
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&#125;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;privacy&quot;: &#123;
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;detected&quot;:
+                false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;vpn&quot;:
+                false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;proxy&quot;:
+                false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;tor&quot;:
+                false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;relay&quot;:
+                false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;hosting&quot;:
+                false,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;service&quot;:
+                &quot;&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&#125;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;abuse&quot;: &#123;
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;address&quot;:
+                &quot;Orange Polska S.A., Jerozolimskie 160, 02-326 Warsaw&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;country&quot;:
+                &quot;PL&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;email&quot;:
+                &quot;cert.opl@orange.com&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;name&quot;:
+                &quot;OPL - Hostmaster&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;network&quot;:
+                &quot;83.21.0.0/16&quot;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;phone&quot;:
+                &quot;+48 800 120810&quot;
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&#125;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;domains&quot;: &#123;
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;page&quot;:
+                0,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;total&quot;:
+                0,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;domains&quot;:
+                []
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&#125;,
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;isLimited&quot;: false
+                <br />
                 &#125;
               </Code>
             </CardBody>
@@ -190,9 +269,27 @@ export default function DocsPage() {
               <h2>Error Responses</h2>
               <Divider />
               <ul className="list-disc pl-5 space-y-2">
-                <li><strong>400 Bad Request</strong>: <Code>&#123; &quot;error&quot;: &quot;Invalid IP format or unable to detect IP&quot; &#125;</Code></li>
-                <li><strong>429 Too Many Requests</strong>: <Code>&#123; &quot;error&quot;: &quot;Rate limit exceeded. Try again later&quot; &#125;</Code></li>
-                <li><strong>500 Internal Server Error</strong>: <Code>&#123; &quot;error&quot;: &quot;Unexpected server error. Please try again later&quot; &#125;</Code></li>
+                <li>
+                  <strong>400 Bad Request</strong>:{" "}
+                  <Code>
+                    &#123; &quot;error&quot;: &quot;Invalid IP format or unable
+                    to detect IP&quot; &#125;
+                  </Code>
+                </li>
+                <li>
+                  <strong>429 Too Many Requests</strong>:{" "}
+                  <Code>
+                    &#123; &quot;error&quot;: &quot;Rate limit exceeded. Try
+                    again later&quot; &#125;
+                  </Code>
+                </li>
+                <li>
+                  <strong>500 Internal Server Error</strong>:{" "}
+                  <Code>
+                    &#123; &quot;error&quot;: &quot;Unexpected server error.
+                    Please try again later&quot; &#125;
+                  </Code>
+                </li>
               </ul>
             </CardBody>
           </Card>
