@@ -37,6 +37,14 @@ export default function DocsPage() {
     <div className="space-y-6">
       <h1 className={`${title()} mb-6`}>API Documentation</h1>
 
+      <div className="flex items-center justify-center w-full">
+        <Alert
+          color="primary"
+          title="Rate Limit"
+          description="You can make up to 1000 requests per 24 hours. Bypassing limits or engaging in spam is strictly forbidden."
+        />
+      </div>
+
       {/* Show error message if there is an error */}
       {errorTitle && errorObject && (
         <div className="mt-8">
@@ -54,14 +62,6 @@ export default function DocsPage() {
           <Spinner />
         </div>
       )}
-
-      <div className="flex items-center justify-center w-full">
-        <Alert
-          color="primary"
-          title="Rate Limit"
-          description="You can make up to 1000 requests per 24 hours. Bypassing limits or engaging in spam is strictly forbidden."
-        />
-      </div>
 
       {!loading && (
         <div className="space-y-4">
