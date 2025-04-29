@@ -439,33 +439,38 @@ export default function Home() {
     const getOperatingSystem = (platform: string) => {
       if (/Win/.test(platform)) return "Windows";
       if (/Mac/.test(platform)) return "macOS";
+      if (/CrOS/.test(navigator.userAgent)) return "ChromeOS";
       if (/Android/.test(navigator.userAgent)) return "Android";
       if (/iPhone|iPad|iPod/.test(navigator.userAgent)) return "iOS";
       if (/Linux/.test(platform)) return "Linux";
       return platform;
     };
 
-    const getBrowserName = (userAgent: string) => {
-      if (/Edge/.test(userAgent)) return "Microsoft Edge";
-      if (/Opera/.test(userAgent)) return "Opera";
-      if (/Firefox/.test(userAgent)) return "Mozilla Firefox";
-      if (/Chrome/.test(userAgent)) return "Google Chrome";
-      if (/Safari/.test(userAgent)) return "Apple Safari";
+    const getBrowserName = (ua: string) => {
+      if (/EdgA|EdgiOS/.test(ua)) return "Microsoft Edge (Mobile)";
+      if (/Edg/.test(ua)) return "Microsoft Edge";
+      if (/OPR|Opera/.test(ua)) return "Opera";
+      if (/Vivaldi/.test(ua)) return "Vivaldi";
+      if (/Brave\//.test(ua) || /Brave/.test(ua)) return "Brave";
+      if (/SamsungBrowser/.test(ua)) return "Samsung Internet";
+      if (/Firefox\/\d+/.test(ua)) return "Mozilla Firefox";
+      if (/CriOS/.test(ua)) return "Google Chrome (iOS)";
+      if (/Chrome\/\d+/.test(ua)) return "Google Chrome";
+      if (/Safari\/\d+/.test(ua)) return "Apple Safari";
       return "Unknown";
     };
 
     const getDeviceType = () => {
-      const userAgent = navigator.userAgent;
-
-      if (/Mobi|Android/i.test(userAgent)) {
-        return "Mobile";
-      } else if (/iPhone|iPad|iPod/i.test(userAgent)) {
-        return "Mobile";
-      } else {
-        return "Desktop";
-      }
+      const ua = navigator.userAgent;
+    
+      if (/iPhone|iPad|iPod|Android|Mobile/i.test(ua)) return "Mobile";
+      if (/Tablet|iPad/i.test(ua)) return "Tablet";
+      if (/SmartTV|TV|HbbTV|NetCast|AppleTV|GoogleTV/i.test(ua)) return "TV";
+      if (/Xbox|PlayStation|Nintendo/i.test(ua)) return "Console";
+    
+      return "Desktop";
     };
-
+    
     setBrowserDetails({
       browser: getBrowserName(navigator.userAgent),
       operatingSystem: getOperatingSystem(navigator.platform),
